@@ -1,162 +1,435 @@
-<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0A4D3E">
-    <meta name="description" content="LiteraRed — Red Social Literaria">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>LiteraRed — Red Social Literaria</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-    tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Playfair Display','serif'],body:['Source Sans 3','sans-serif']}}}}
-    </script>
-    <style>
-        :root{
-            --bg:#F5EDE0;--bg-card:#FDFAF5;--text:#2C1810;--text-2:#4A3228;--text-muted:#6B4D3D;
-            --primary:#0A4D3E;--primary-light:#127A5F;--primary-bg:rgba(10,77,62,.08);
-            --accent:#722F37;--accent-light:#943D47;--leather:#8B5E3C;--leather-light:#A67B5B;
-            --border:#D4C4B0;--sidebar:#EDE3D4;--star:#8B6914;--heart:#722F37;
-        }
-        .dark{
-            --bg:#140E0A;--bg-card:#221A13;--text:#F5E6D0;--text-2:#DEC8A8;--text-muted:#B8A48E;
-            --primary:#3DB88E;--primary-light:#5CCCA4;--primary-bg:rgba(61,184,142,.12);
-            --accent:#D4566A;--accent-light:#E07088;--leather:#C49B6E;--leather-light:#D9BA96;
-            --border:#3A2C22;--sidebar:#1A130E;--star:#DAA520;--heart:#D4566A;
-        }
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);transition:background .4s,color .4s}
-        h1,h2,h3,h4,h5{font-family:'Playfair Display',serif}
-        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-        @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-        @keyframes rotateQuill{0%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}100%{transform:rotate(-5deg)}}
-        @keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
-        @keyframes progressStripe{0%{background-position:1rem 0}100%{background-position:0 0}}
-        .animate-fadeInUp{animation:fadeInUp .5s ease forwards}.animate-fadeIn{animation:fadeIn .3s ease forwards}
-        .card-lit{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;transition:all .3s ease}
-        .card-lit:hover{box-shadow:0 8px 30px rgba(44,24,16,.1);transform:translateY(-2px)}
-        .btn-primary{background:var(--primary);color:#FFF;border:none;padding:10px 24px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Source Sans 3',sans-serif}
-        .btn-primary:hover{background:var(--primary-light);transform:translateY(-1px);box-shadow:0 4px 12px rgba(10,77,62,.3)}
-        .btn-accent{background:var(--accent);color:#FFF;border:none;padding:10px 24px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Source Sans 3',sans-serif}
-        .btn-accent:hover{background:var(--accent-light)}
-        .btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary);padding:8px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Source Sans 3',sans-serif}
-        .btn-outline:hover{background:var(--primary);color:#FFF}
-        .btn-download{background:linear-gradient(135deg,var(--primary),#062E26);color:#FFF;border:none;padding:10px 24px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Source Sans 3',sans-serif;font-size:14px}
-        .btn-download:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(10,77,62,.4)}
-        .sidebar-link{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--text-muted);font-weight:500}
-        .sidebar-link:hover{background:var(--primary-bg);color:var(--primary)}
-        .sidebar-link.active{background:var(--primary-bg);color:var(--primary);font-weight:700}
-        .badge-count{background:var(--accent);color:#FFF;font-size:11px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px}
-        .genre-tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500;background:var(--primary-bg);color:var(--primary);transition:all .2s;cursor:pointer}
-        .genre-tag:hover{filter:brightness(1.1)}
-        .toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:10px;color:#FFF;font-weight:500;z-index:9999;animation:fadeInUp .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.25)}
-        .toast-success{background:var(--primary)}.toast-error{background:var(--accent)}
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease;backdrop-filter:blur(4px)}
-        .modal-content{background:var(--bg-card);border-radius:16px;max-width:560px;width:90%;max-height:85vh;overflow-y:auto;animation:fadeInUp .3s ease}
-        .input-field{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:15px;transition:border-color .2s;outline:none}
-        .input-field:focus{border-color:var(--primary)}
-        textarea.input-field{resize:vertical;min-height:80px}
-        .input-field::placeholder{color:var(--text-muted);opacity:1}
-        .login-bg{background:linear-gradient(135deg,#1A0F0A 0%,#2C1810 30%,#3A2518 55%,#1A0F0A 80%,#072A21 100%);position:relative;overflow:hidden}
-        .login-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 25% 45%,rgba(139,94,60,.18) 0%,transparent 50%),radial-gradient(circle at 75% 25%,rgba(10,77,62,.12) 0%,transparent 40%),radial-gradient(circle at 50% 80%,rgba(114,47,55,.08) 0%,transparent 40%)}
-        .particle{position:absolute;background:rgba(196,155,110,.5);border-radius:50%;animation:float 4s ease-in-out infinite}
-        .login-text{color:#F5E6D0}.login-text-muted{color:#C4AD96}
-        .login-input{background:rgba(255,255,255,.08);border:1px solid rgba(196,155,110,.3);color:#F5E6D0;border-radius:8px;padding:12px 16px;width:100%;outline:none;font-family:'Source Sans 3',sans-serif;font-size:15px;transition:border-color .2s}
-        .login-input:focus{border-color:#C49B6E}.login-input::placeholder{color:#A6906E}
-        .legal-box{background:var(--bg);border:2px solid var(--leather);border-radius:12px;padding:16px}
-        .upload-zone{border:3px dashed var(--border);border-radius:16px;padding:40px 20px;text-align:center;transition:all .3s;cursor:pointer}
-        .upload-zone:hover,.upload-zone.dragover{border-color:var(--primary);background:var(--primary-bg)}
-        .upload-progress{height:8px;border-radius:4px;background:var(--border);overflow:hidden}
-        .upload-progress-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--primary-light));background-image:linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);background-size:1rem 100%;animation:progressStripe 1s linear infinite;transition:width .3s ease}
-        .tab-step{padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;border:2px solid var(--border);color:var(--text-muted);background:transparent}
-        .tab-step.active{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
-        .tab-step.completed{border-color:var(--primary);color:#FFF;background:var(--primary)}
-        .sync-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
-        .sync-ok{background:var(--primary-bg);color:var(--primary)}.sync-pending{background:rgba(139,105,20,.12);color:var(--star)}.sync-error{background:rgba(114,47,55,.1);color:var(--accent)}.sync-off{background:rgba(107,77,61,.1);color:var(--text-muted)}
-        .install-banner{animation:slideDown .5s ease;background:linear-gradient(135deg,var(--primary),#062E26);position:fixed;top:0;left:0;right:0;z-index:9998;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#FFF;box-shadow:0 4px 20px rgba(0,0,0,.2)}
-        @media(max-width:768px){.desktop-sidebar{display:none!important}.desktop-right{display:none!important}.mobile-nav{display:flex!important}.main-content{margin:0!important;padding-bottom:70px!important}}
-        @media(min-width:769px){.mobile-nav{display:none!important}}
-        .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    </style>
-</head>
-<body>
-<div id="installBanner" class="install-banner" style="display:none"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0"><i class="fas fa-download"></i></div><div><p class="font-semibold text-sm">Instalar LiteraRed</p></div></div><div class="flex items-center gap-2"><button onclick="installPWA()" class="px-4 py-2 bg-white text-emerald-700 font-bold rounded-lg text-sm">Instalar</button><button onclick="document.getElementById('installBanner').style.display='none'" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/20"><i class="fas fa-times"></i></button></div></div>
+.has(n.id))APP.readingNotes.push(n)});
+        if(s.settings) APP.isDark=s.settings.isDark;
+        renderApp(); // Actualiza la UI con los datos mezclados
+    },
+    updateBadge(status){
+        const badge=document.getElementById('syncBadgeHeader');
+        if(!badge)return;
+        if(status==='ok'){badge.className='sync-badge sync-ok';badge.innerHTML='<i class="fas fa-check-circle"></i> Sync OK'}
+        else if(status==='error'){badge.className='sync-badge sync-error';badge.innerHTML='<i class="fas fa-exclamation-circle"></i> Error'}
+        else{badge.className='sync-badge sync-off';badge.innerHTML='<i class="fas fa-wifi"></i> Offline'}
+    }
+};
 
-<!-- LOGIN -->
-<div id="authScreen" class="login-bg min-h-screen flex items-center justify-center p-4">
-    <div class="particle" style="top:10%;left:15%;width:4px;height:4px"></div><div class="particle" style="top:30%;left:75%;animation-delay:1s;width:6px;height:6px"></div><div class="particle" style="top:70%;left:25%;animation-delay:2s"></div><div class="particle" style="top:50%;left:85%;animation-delay:.5s;width:3px;height:3px"></div><div class="particle" style="top:80%;left:60%;animation-delay:1.5s;width:5px;height:5px"></div>
-    <div class="relative z-10 w-full max-w-md">
-        <div class="text-center mb-8 animate-fadeInUp"><div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm mb-4 border border-white/15"><i class="fas fa-feather-pointed text-3xl" style="color:#C49B6E;animation:rotateQuill 2s ease-in-out infinite;display:inline-block"></i></div><h1 class="text-4xl font-black font-display" style="color:#F5E6D0">LiteraRed</h1><p class="mt-2 text-lg font-light" style="color:#C4AD96">Donde las letras se encuentran</p></div>
-        <div class="bg-white/8 backdrop-blur-xl rounded-2xl p-8 border border-white/12 shadow-2xl animate-fadeInUp" style="animation-delay:.2s">
-            <div class="flex mb-6 bg-white/8 rounded-lg p-1"><button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2.5 rounded-md text-sm font-semibold transition-all" style="background:#C49B6E;color:#1A0F0A">Iniciar Sesion</button><button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2.5 rounded-md text-sm font-semibold transition-all" style="color:#C4AD96">Registrarse</button></div>
-            <div id="loginForm"><div class="space-y-4">
-                <div><label class="block text-sm mb-1.5 font-medium login-text-muted">Correo</label><input id="loginEmail" type="email" class="login-input" placeholder="tu@correo.com" value="maria@literared.com"></div>
-                <div><label class="block text-sm mb-1.5 font-medium login-text-muted">Contrasena</label><input id="loginPass" type="password" class="login-input" placeholder="Tu contrasena" value="demo1234"></div>
-                <div id="loginError" class="hidden text-sm p-3 rounded-lg" style="background:rgba(212,86,106,.15);color:#F5C6CF"><i class="fas fa-exclamation-circle mr-1"></i><span id="loginErrorText"></span></div>
-                <button onclick="handleLogin()" id="loginBtn" class="w-full py-3 font-bold rounded-lg transition-all flex items-center justify-center gap-2" style="background:#C49B6E;color:#1A0F0A"><span>Entrar</span><i class="fas fa-arrow-right"></i></button>
-            </div></div>
-            <div id="registerForm" class="hidden"><div class="space-y-4">
-                <div><label class="block text-sm mb-1.5 font-medium login-text-muted">Nombre</label><input id="regName" type="text" class="login-input" placeholder="Ej: Maria Garcia"></div>
-                <div><label class="block text-sm mb-1.5 font-medium login-text-muted">Correo</label><input id="regEmail" type="email" class="login-input" placeholder="tu@correo.com"></div>
-                <div><label class="block text-sm mb-1.5 font-medium login-text-muted">Contrasena</label><input id="regPass" type="password" class="login-input" placeholder="Minimo 6 caracteres"></div>
-                <div id="regError" class="hidden text-sm p-3 rounded-lg" style="background:rgba(212,86,106,.15);color:#F5C6CF"><i class="fas fa-exclamation-circle mr-1"></i><span id="regErrorText"></span></div>
-                <button onclick="handleRegister()" id="regBtn" class="w-full py-3 font-bold rounded-lg transition-all" style="background:#C49B6E;color:#1A0F0A"><i class="fas fa-user-plus mr-2"></i>Crear cuenta</button>
-            </div></div>
-            <div class="flex items-center gap-4 my-6"><div class="flex-1 h-px" style="background:rgba(196,155,110,.25)"></div><span class="text-sm" style="color:#A6906E">o</span><div class="flex-1 h-px" style="background:rgba(196,155,110,.25)"></div></div>
-            <button onclick="handleGoogleLogin()" class="w-full py-3 bg-white/8 hover:bg-white/15 border border-white/15 rounded-lg font-semibold transition flex items-center justify-center gap-3 login-text"><i class="fab fa-google text-lg"></i> Continuar con Google</button>
-            <p class="text-center text-xs mt-4" style="color:#A6906E">Tus datos se sincronizan entre dispositivos</p>
+// --- FUNCIONES DE DATOS E INICIALIZACIÓN ---
+function loadAppData(){
+    try {
+        const saved=localStorage.getItem('literared_app');
+        if(saved){ APP={...DEFAULT_DATA,...JSON.parse(saved)}; }
+        else { APP=JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+    } catch(e){ APP=JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+}
+
+function saveAppData(){
+    try { localStorage.setItem('literared_app',JSON.stringify(APP)); } catch(e){}
+}
+
+function init(){
+    loadAppData();
+    if(APP.isLoggedIn) showMainApp(); 
+    else showAuthScreen();
+    
+    if(APP.isDark) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+}
+
+// --- AUTENTICACIÓN ---
+function switchAuthTab(tab){
+    const loginForm=document.getElementById('loginForm');
+    const registerForm=document.getElementById('registerForm');
+    const tabLogin=document.getElementById('tabLogin');
+    const tabRegister=document.getElementById('tabRegister');
+    
+    if(tab==='login'){
+        loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
+        tabLogin.style.background='#C49B6E'; tabLogin.style.color='#1A0F0A';
+        tabRegister.style.background='transparent'; tabRegister.style.color='#C4AD96';
+    } else {
+        loginForm.classList.add('hidden'); registerForm.classList.remove('hidden');
+        tabRegister.style.background='#C49B6E'; tabRegister.style.color='#1A0F0A';
+        tabLogin.style.background='transparent'; tabLogin.style.color='#C4AD96';
+    }
+}
+
+async function handleLogin(){
+    const email=document.getElementById('loginEmail').value;
+    const pass=document.getElementById('loginPass').value;
+    const errBox=document.getElementById('loginError');
+    const errText=document.getElementById('loginErrorText');
+    errBox.classList.add('hidden');
+    
+    if(!email||!pass){ errText.textContent='Rellena todos los campos'; errBox.classList.remove('hidden'); return; }
+    
+    const res=await SyncService.login(email,pass);
+    if(res.error){ errText.textContent=res.error; errBox.classList.remove('hidden'); }
+    else {
+        APP.isLoggedIn=true; APP._authToken=res.token; APP._userId=res.userId;
+        SyncService.pull(); 
+        if(!APP.currentUser._updatedAt) APP.currentUser=DEFAULT_DATA.currentUser;
+        saveAppData(); showMainApp();
+    }
+}
+
+async function handleRegister(){
+    const name=document.getElementById('regName').value;
+    const email=document.getElementById('regEmail').value;
+    const pass=document.getElementById('regPass').value;
+    const errBox=document.getElementById('regError');
+    const errText=document.getElementById('regErrorText');
+    errBox.classList.add('hidden');
+    
+    if(!name||!email||!pass){ errText.textContent='Rellena todos los campos'; errBox.classList.remove('hidden'); return; }
+    if(pass.length<6){ errText.textContent='La contrasena debe tener al menos 6 caracteres'; errBox.classList.remove('hidden'); return; }
+    
+    const res=await SyncService.register(email,pass,name);
+    if(res.error){ errText.textContent=res.error; errBox.classList.remove('hidden'); }
+    else {
+        APP.isLoggedIn=true; APP._authToken=res.token; APP._userId=res.userId;
+        APP.currentUser={...DEFAULT_DATA.currentUser, name, username:'@'+name.toLowerCase().replace(/\s/g,''), email};
+        saveAppData(); SyncService.push(); showMainApp();
+    }
+}
+
+function handleGoogleLogin(){
+    showToast('Google Login es solo demo','error');
+    APP.isLoggedIn=true; APP._authToken='google_demo_token'; APP._userId='google@demo.com';
+    APP.currentUser=DEFAULT_DATA.currentUser; saveAppData(); showMainApp();
+}
+
+function showAuthScreen(){ document.getElementById('authScreen').classList.remove('hidden'); document.getElementById('mainApp').classList.add('hidden'); }
+function showMainApp(){ document.getElementById('authScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); renderApp(); navigate('feed'); }
+
+// --- NAVEGACIÓN Y UI PRINCIPAL ---
+let currentView = 'feed';
+
+function navigate(view){
+    currentView=view;
+    document.querySelectorAll('.sidebar-link').forEach(l=> l.classList.toggle('active', l.dataset.nav===view));
+    document.querySelectorAll('.mobile-nav button[data-mob]').forEach(b=> b.style.color = b.dataset.mob===view ? 'var(--primary)' : 'var(--text-muted)');
+    
+    const titles={feed:'Inicio',forums:'Foros',exchange:'Biblioteca',profile:'Mi Perfil',notifications:'Alertas',search:'Buscar',data:'Sync'};
+    document.getElementById('viewTitle').textContent=titles[view]||'LiteraRed';
+    renderView(view);
+}
+
+function renderApp(){
+    const u=APP.currentUser;
+    document.getElementById('sidebarAvatar').src=u.avatar;
+    document.getElementById('sidebarName').textContent=u.name;
+    document.getElementById('sidebarUser').textContent=u.username;
+    
+    const darkIcon=document.getElementById('darkIcon');
+    if(APP.isDark){ document.documentElement.classList.add('dark'); darkIcon.classList.replace('fa-moon','fa-sun'); }
+    else { document.documentElement.classList.remove('dark'); darkIcon.classList.replace('fa-sun','fa-moon'); }
+    renderRightSidebar();
+}
+
+function renderRightSidebar(){
+    const box=document.getElementById('rightReading');
+    if(!box)return;
+    const u=APP.currentUser;
+    box.innerHTML=`
+        <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-16 rounded flex items-center justify-center" style="background:var(--primary-bg)"><i class="fas fa-book" style="color:var(--primary)"></i></div>
+            <div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate" style="color:var(--text)">${u.currentlyReading}</p><p class="text-xs" style="color:var(--text-muted)">${u.currentlyReadingAuthor}</p></div>
         </div>
-        <p class="text-center text-sm mt-6 italic font-display" style="color:#8B7A66">"Un lector vive mil vidas antes de morir." — George R.R. Martin</p>
-    </div>
-</div>
+        <div class="flex items-center gap-2 mb-1"><div class="flex-1 h-2 rounded-full" style="background:var(--border)"><div class="h-full rounded-full" style="background:var(--primary);width:${u.readingProgress}%"></div></div><span class="text-xs font-bold" style="color:var(--primary)">${u.readingProgress}%</span></div>
+        <button onclick="openNoteModal()" class="w-full text-xs font-semibold py-2 rounded-lg mt-2" style="background:var(--primary-bg);color:var(--primary)"><i class="fas fa-sticky-note mr-1"></i>Agregar nota</button>`;
+}
 
-<!-- APP -->
-<div id="mainApp" class="hidden min-h-screen">
-    <aside class="desktop-sidebar fixed left-0 top-0 bottom-0 w-64 border-r z-50 flex flex-col transition-colors duration-300 overflow-y-auto" style="background:var(--sidebar);border-color:var(--border)">
-        <div class="p-5" style="border-bottom:1px solid var(--border)"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:var(--primary)"><i class="fas fa-feather-pointed" style="color:#C49B6E"></i></div><div><h2 class="font-display font-bold text-lg" style="color:var(--text)">LiteraRed</h2><p class="text-xs" style="color:var(--text-muted)">Red Literaria</p></div></div></div>
-        <nav class="flex-1 p-4 space-y-1">
-            <div onclick="navigate('feed')" class="sidebar-link active" data-nav="feed"><i class="fas fa-home w-5 text-center"></i><span>Inicio</span></div>
-            <div onclick="navigate('forums')" class="sidebar-link" data-nav="forums"><i class="fas fa-comments w-5 text-center"></i><span>Foros</span></div>
-            <div onclick="navigate('exchange')" class="sidebar-link" data-nav="exchange"><i class="fas fa-cloud-download-alt w-5 text-center"></i><span>Biblioteca</span></div>
-            <div onclick="navigate('profile')" class="sidebar-link" data-nav="profile"><i class="fas fa-user w-5 text-center"></i><span>Mi Perfil</span></div>
-            <div onclick="navigate('notifications')" class="sidebar-link" data-nav="notifications"><i class="fas fa-bell w-5 text-center"></i><span>Alertas</span><span class="badge-count ml-auto" id="notifBadge">3</span></div>
-            <div onclick="navigate('search')" class="sidebar-link" data-nav="search"><i class="fas fa-search w-5 text-center"></i><span>Buscar</span></div>
-            <div onclick="navigate('data')" class="sidebar-link" data-nav="data"><i class="fas fa-database w-5 text-center"></i><span>Sync</span></div>
-        </nav>
-        <div class="p-4" style="border-top:1px solid var(--border)"><div class="flex items-center gap-3"><img id="sidebarAvatar" src="" class="w-10 h-10 rounded-full object-cover" style="box-shadow:0 0 0 2px var(--primary)"><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate" style="color:var(--text)" id="sidebarName"></p><p class="text-xs truncate" style="color:var(--text-muted)" id="sidebarUser"></p></div><button onclick="toggleDark()" class="w-8 h-8 rounded-lg flex items-center justify-center transition" style="color:var(--text-muted)" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='transparent'"><i class="fas fa-moon text-sm" id="darkIcon"></i></button></div></div>
-    </aside>
-    <main class="main-content ml-64 min-h-screen">
-        <header class="sticky top-0 z-40 backdrop-blur-lg" style="background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--border)"><div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between"><h3 class="font-display font-bold text-lg" style="color:var(--text)" id="viewTitle">Inicio</h3><div class="flex items-center gap-2"><span id="syncBadgeHeader" class="sync-badge sync-ok"><i class="fas fa-check-circle"></i> Sync OK</span><button onclick="openCreatePost()" class="btn-primary text-sm py-2 px-4 flex items-center gap-2"><i class="fas fa-pen-nib"></i><span class="hidden sm:inline">Crear</span></button></div></div></header>
-        <div class="max-w-3xl mx-auto px-4 py-6" id="contentArea"></div>
-    </main>
-    <aside class="desktop-right fixed right-0 top-0 bottom-0 w-72 border-l z-40 overflow-y-auto p-5 hidden lg:block" style="background:var(--sidebar);border-color:var(--border)"><div class="card-lit p-4 mb-5"><h4 class="font-display font-bold text-sm mb-3" style="color:var(--text)">Leyendo</h4><div id="rightReading"></div></div></aside>
-    <nav class="mobile-nav fixed bottom-0 left-0 right-0 border-t z-50 justify-around items-center py-2 px-1" style="background:var(--bg-card);border-color:var(--border);display:none">
-        <button onclick="navigate('feed')" data-mob="feed" class="flex flex-col items-center gap-0.5 px-3 py-1" style="color:var(--text-muted)"><i class="fas fa-home text-lg"></i><span class="text-[10px]">Inicio</span></button>
-        <button onclick="navigate('forums')" data-mob="forums" class="flex flex-col items-center gap-0.5 px-3 py-1" style="color:var(--text-muted)"><i class="fas fa-comments text-lg"></i><span class="text-[10px]">Foros</span></button>
-        <button onclick="openCreatePost()" class="flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl text-white -mt-4 shadow-lg" style="background:var(--primary)"><i class="fas fa-pen-nib text-lg"></i></button>
-        <button onclick="navigate('exchange')" data-mob="exchange" class="flex flex-col items-center gap-0.5 px-3 py-1" style="color:var(--text-muted)"><i class="fas fa-cloud-download-alt text-lg"></i><span class="text-[10px]">Libros</span></button>
-        <button onclick="navigate('profile')" data-mob="profile" class="flex flex-col items-center gap-0.5 px-3 py-1" style="color:var(--text-muted)"><i class="fas fa-user text-lg"></i><span class="text-[10px]">Perfil</span></button>
-    </nav>
-</div>
+function toggleDark(){ APP.isDark=!APP.isDark; saveAppData(); renderApp(); }
 
-<!-- MODALES -->
-<div id="createPostModal" class="hidden"><div class="modal-overlay" onclick="closeCreatePost(event)"><div class="modal-content p-6" onclick="event.stopPropagation()"><div class="flex items-center justify-between mb-5"><h3 class="font-display font-bold text-xl" style="color:var(--text)">Nueva publicacion</h3><button onclick="closeCreatePost()" class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--text-muted)"><i class="fas fa-times"></i></button></div><div class="flex gap-2 mb-4 flex-wrap"><button onclick="setPostType('review')" class="post-type-btn px-4 py-2 rounded-lg text-sm font-medium text-white" data-type="review" style="background:var(--primary)"><i class="fas fa-star mr-1"></i>Resena</button><button onclick="setPostType('quote')" class="post-type-btn px-4 py-2 rounded-lg text-sm font-medium" data-type="quote" style="background:var(--border);color:var(--text)"><i class="fas fa-quote-left mr-1"></i>Cita</button><button onclick="setPostType('discussion')" class="post-type-btn px-4 py-2 rounded-lg text-sm font-medium" data-type="discussion" style="background:var(--border);color:var(--text)"><i class="fas fa-comment mr-1"></i>Debate</button></div><div class="space-y-4"><div id="bookTitleField"><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Libro</label><input type="text" id="postBookTitle" class="input-field" placeholder="Titulo"></div><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Contenido</label><textarea id="postContent" class="input-field" rows="4" placeholder="Tus pensamientos..."></textarea></div><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Genero</label><div class="flex flex-wrap gap-2" id="postGenreTags"></div></div><div id="ratingField"><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Puntuacion</label><div class="flex gap-1 text-2xl" style="color:var(--border)"><i class="fas fa-star cursor-pointer" onclick="setRating(1)"></i><i class="fas fa-star cursor-pointer" onclick="setRating(2)"></i><i class="fas fa-star cursor-pointer" onclick="setRating(3)"></i><i class="fas fa-star cursor-pointer" onclick="setRating(4)"></i><i class="fas fa-star cursor-pointer" onclick="setRating(5)"></i></div></div><button onclick="submitPost()" class="btn-primary w-full py-3">Publicar</button></div></div></div></div>
-<div id="postDetailModal" class="hidden"><div class="modal-overlay" onclick="closePostDetail()"><div class="modal-content p-6" onclick="event.stopPropagation()" id="postDetailContent"></div></div></div>
-<div id="threadModal" class="hidden"><div class="modal-overlay" onclick="closeThreadModal()"><div class="modal-content p-6" onclick="event.stopPropagation()" id="threadContent"></div></div></div>
-<div id="shareBookModal" class="hidden"><div class="modal-overlay" onclick="closeShareBook(event)"><div class="modal-content p-6" onclick="event.stopPropagation()" style="max-width:620px"><div class="flex items-center justify-between mb-4"><h3 class="font-display font-bold text-xl" style="color:var(--text)"><i class="fas fa-cloud-upload-alt mr-2" style="color:var(--primary)"></i>Compartir libro</h3><button onclick="closeShareBook()" class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--text-muted)"><i class="fas fa-times"></i></button></div><div class="legal-box mb-4"><div class="flex items-start gap-3"><i class="fas fa-exclamation-triangle mt-0.5" style="color:var(--leather)"></i><div><p class="font-bold text-sm" style="color:var(--text)">Aviso legal</p><p class="text-sm mt-1" style="color:var(--text-2)">La legalidad es <strong>responsabilidad exclusiva de quien lo sube</strong>. LiteraRed no almacena archivos.</p></div></div></div><div class="mb-4"><div class="upload-zone mb-4" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');"><input type="file" id="fileInput" class="hidden" accept=".pdf,.epub,.mobi,.doc,.txt" onchange="handleFileSelect(this)"><div><div class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-3" style="background:var(--primary-bg)"><i class="fas fa-cloud-upload-alt text-3xl" style="color:var(--primary)"></i></div><p class="font-semibold" style="color:var(--text)">Arrastra tu archivo</p><p class="text-sm mt-1" style="color:var(--text-muted)">o haz clic</p></div></div><div id="fileInfoBox" class="hidden card-lit p-4 mb-4"><div class="flex items-center gap-3"><div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(114,47,55,.08)"><i id="fileTypeIcon" class="fas fa-file-pdf text-xl" style="color:var(--accent)"></i></div><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate" style="color:var(--text)" id="fileName"></p><p class="text-xs" style="color:var(--text-muted)" id="fileSize"></p></div><button onclick="clearFile()" class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--accent)"><i class="fas fa-times"></i></button></div></div><div id="uploadProgressBox" class="hidden mb-4"><div class="flex items-center justify-between mb-2"><p class="text-sm font-medium" style="color:var(--text)">Subiendo...</p><p class="text-sm font-bold" style="color:var(--primary)" id="uploadPercent">0%</p></div><div class="upload-progress"><div class="upload-progress-bar" id="uploadBar" style="width:0%"></div></div></div><div id="uploadResultBox" class="hidden card-lit p-4 mb-4" style="border-color:var(--primary)"><div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--primary-bg)"><i class="fas fa-check" style="color:var(--primary)"></i></div><p class="font-semibold text-sm" style="color:var(--text)">Subido</p></div><div class="flex items-center gap-2 p-2 rounded-lg" style="background:var(--bg)"><i class="fas fa-link text-sm" style="color:var(--primary)"></i><input type="text" id="generatedUrl" class="flex-1 text-sm bg-transparent border-none outline-none" style="color:var(--text)" readonly><button onclick="navigator.clipboard.writeText(document.getElementById('generatedUrl').value);showToast('Copiado')" class="text-xs font-semibold px-2 py-1 rounded" style="color:var(--primary)"><i class="fas fa-copy"></i></button></div></div><div class="mb-4"><button onclick="document.getElementById('manualLinkBox').classList.toggle('hidden')" class="text-sm font-medium flex items-center gap-2" style="color:var(--primary)"><i class="fas fa-link"></i>Tengo un enlace</button><div id="manualLinkBox" class="hidden mt-3"><input type="url" id="manualUrl" class="input-field" placeholder="https://www.mediafire.com/..." oninput="checkManualUrl()"><div class="flex flex-wrap gap-2 mt-2"><button onclick="window.open('https://www.mediafire.com/','_blank')" class="text-xs px-3 py-1.5 rounded-lg font-medium" style="background:var(--primary-bg);color:var(--primary)">MediaFire</button><button onclick="window.open('https://drive.google.com/','_blank')" class="text-xs px-3 py-1.5 rounded-lg font-medium" style="background:var(--primary-bg);color:var(--primary)">Drive</button><button onclick="window.open('https://mega.nz/','_blank')" class="text-xs px-3 py-1.5 rounded-lg font-medium" style="background:var(--primary-bg);color:var(--primary)">Mega</button></div></div></div><button onclick="if(selectedFile&&!uploadedUrl)uploadToExternalServer();else if(uploadedUrl)goToStep2();" id="nextStepBtn" class="btn-primary w-full py-3" disabled><i class="fas fa-arrow-right mr-2"></i>Continuar</button></div><div id="uploadStep2" class="hidden"><div class="space-y-4"><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Titulo *</label><input type="text" id="shareBookTitle" class="input-field" placeholder="Ej: El aleph"></div><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Autor *</label><input type="text" id="shareBookAuthor" class="input-field" placeholder="Ej: Borges"></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Formato</label><select id="shareBookFormat" class="input-field"><option>PDF</option><option>EPUB</option><option>MOBI</option></select></div><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Genero</label><select id="shareBookGenre" class="input-field"><option>Narrativa</option><option>Poesia</option><option>Ensayo</option><option>C. Ficcion</option><option>Fantasia</option><option>Terror</option></select></div></div><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Descripcion</label><textarea id="shareBookDesc" class="input-field" rows="3"></textarea></div><label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg" style="background:var(--bg)"><input type="checkbox" id="shareLegalAccept" class="mt-1 w-4 h-4" style="accent-color:var(--primary)"><span class="text-sm" style="color:var(--text)">Asumo toda responsabilidad.</span></label><div class="flex gap-3"><button onclick="goToStep1()" class="btn-outline flex-1 py-3">Atras</button><button onclick="submitSharedBook()" id="publishBookBtn" class="btn-primary flex-1 py-3 opacity-50 cursor-not-allowed" disabled>Publicar</button></div></div></div></div></div></div>
-<div id="noteModal" class="hidden"><div class="modal-overlay" onclick="closeNoteModal()"><div class="modal-content p-6" onclick="event.stopPropagation()"><div class="flex items-center justify-between mb-5"><h3 class="font-display font-bold text-xl" style="color:var(--text)">Nota de lectura</h3><button onclick="closeNoteModal()" class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--text-muted)"><i class="fas fa-times"></i></button></div><div class="space-y-4"><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Libro</label><input type="text" id="noteBook" class="input-field" placeholder="Titulo"></div><div><label class="block text-sm font-medium mb-1.5" style="color:var(--text)">Nota</label><textarea id="noteContent" class="input-field" rows="5"></textarea></div><div class="flex gap-3"><button onclick="saveNoteToStorage()" class="btn-primary flex-1 py-3"><i class="fas fa-save mr-2"></i>Guardar</button><button onclick="downloadNote()" class="btn-accent flex-1 py-3"><i class="fas fa-download mr-2"></i>.txt</button></div></div></div></div></div>
-<div id="toastContainer"></div>
+// --- RENDERIZADO DE VISTAS ---
+function renderView(view){
+    const area=document.getElementById('contentArea');
+    area.innerHTML='';
+    if(view==='feed') renderFeed(area);
+    else if(view==='forums') renderForums(area);
+    else if(view==='exchange') renderExchange(area);
+    else if(view==='profile') renderProfile(area);
+    else if(view==='notifications') renderNotifications(area);
+    else if(view==='search') renderSearch(area);
+    else if(view==='data') renderData(area);
+    else area.innerHTML='<p class="text-center" style="color:var(--text-muted)">Vista no encontrada</p>';
+}
 
-<script>
-const GENRES=['Poesia','Narrativa','Ensayo','Ciencia Ficcion','Fantasia','Terror','Historia','Filosofia'];
-const API_BASE=window.location.origin;
-const DEFAULT_DATA={currentUser:{id:1,name:"Maria Garcia",username:"@mariagarcia",avatar:"https://picsum.photos/seed/maria/200/200",bio:"Amante de la poesia y la narrativa.",location:"Buenos Aires",genres:["Poesia","Narrativa"],currentlyReading:"Cien anos de soledad",currentlyReadingAuthor:"Gabriel Garcia Marquez",readingProgress:67,booksRead:127,exchanges:15,posts:43,followers:892,following:234},posts:[{id:1,type:'review',user:{name:"Carlos Mendoza",avatar:"https://picsum.photos/seed/carlos/100/100",username:"@carlosm"},book:"Rayuela",author:"Julio Cortazar",rating:5,content:"Una obra maestra de la narrativa.",genres:["Narrativa"],likes:47,comments:12,time:"Hace 2h",liked:false,commentList:[]},{id:2,type:'quote',user:{name:"Isabel Allende",avatar:"https://picsum.photos/seed/isabel/100/100",username:"@isabel_a"},content:'"Los suenos nos hacen." — Galeano',genres:["Poesia"],likes:128,comments:23,time:"Hace 4h",liked:true,commentList:[]},{id:3,type:'discussion',user:{name:"Fernanda Lopez",avatar:"https://picsum.photos/seed/fernanda/100/100",username:"@ferlopez"},content:"Es Grete la antagonista en Kafka?",genres:["Narrativa"],likes:63,comments:31,time:"Hace 6h",liked:false,commentList:[]}],forums:[{id:1,name:"Poesia",icon:"fa-feather",color:"#8B5E3C",members:1234,threads:567,description:"Poesia moderna",recentThreads:[{id:1,title:"Szymborska",author:"Maria",avatar:"https://picsum.photos/seed/maria/50/50",replies:23,time:"1h"}]},{id:2,name:"Narrativa",icon:"fa-book-open",color:"#722F37",members:2341,threads:892,description:"El boom y mas alla",recentThreads:[{id:2,title:"El Boom agotado?",author:"Roberto",avatar:"https://picsum.photos/seed/roberto/50/50",replies:89,time:"2h"}]}],sharedBooks:[{id:1,title:"El aleph",author:"Borges",format:"PDF",genre:"Narrativa",owner:"Carlos",ownerAvatar:"https://picsum.photos/seed/carlos/100/100",cover:"https://picsum.photos/seed/aleph/200/300",description:"Edicion Emece.",downloadUrl:"https://catbox.moe/ex",downloads:234,time:"2h",server:"catbox"},{id:2,title:"20 poemas",author:"Neruda",format:"EPUB",genre:"Poesia",owner:"Sofia",ownerAvatar:"https://picsum.photos/seed/sofia/100/100",cover:"https://picsum.photos/seed/neruda/200/300",description:"Edicion especial.",downloadUrl:"https://drive.google.com/ex",downloads:187,time:"5h",server:"gdrive"}],notifications:[{id:1,type:'like',user:"Carlos",avatar:"https://picsum.photos/seed/carlos/50/50",text:"le gusta tu resena",time:"15m",read:false},{id:2,type:'comment',user:"Fernanda",avatar:"https://picsum.photos/seed/fernanda/50/50",text:"comento tu post",time:"1h",read:false},{id:3,type:'follow',user:"Diego",avatar:"https://picsum.photos/seed/diego/50/50",text:"te sigue",time:"3h",read:true}],suggestedUsers:[{name:"Alejandro",username:"@ale",avatar:"https://picsum.photos/seed/ale/100/100",bio:"Critico",genres:["Ensayo"]}],readingNotes:[],isLoggedIn:false,isDark:false,_syncTimestamp:0,_authToken:null,_userId:null};
-let APP,deferredPrompt=null,currentRating=0,selectedFile=null,uploadedUrl='',uploadServer='';
+function renderFeed(area){
+    let html='';
+    APP.posts.forEach(p=>{
+        html+=`<div class="card-lit p-5 mb-4 animate-fadeInUp">
+            <div class="flex items-center gap-3 mb-3">
+                <img src="${p.user.avatar}" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex-1"><p class="font-semibold text-sm" style="color:var(--text)">${p.user.name}</p><p class="text-xs" style="color:var(--text-muted)">${p.user.username} · ${p.time}</p></div>
+                ${p.type==='review'?'<span class="genre-tag"><i class="fas fa-star text-xs mr-1"></i>Resena</span>':p.type==='quote'?'<span class="genre-tag" style="background:rgba(139,94,60,.1);color:var(--leather)"><i class="fas fa-quote-left text-xs mr-1"></i>Cita</span>':'<span class="genre-tag" style="background:rgba(114,47,55,.1);color:var(--accent)"><i class="fas fa-comment text-xs mr-1"></i>Debate</span>'}
+            </div>
+            ${p.book?`<p class="font-display font-bold mb-1" style="color:var(--text)">${p.book}</p>`:''}
+            ${p.author?`<p class="text-sm mb-2" style="color:var(--text-muted)">de ${p.author}</p>`:''}
+            ${p.rating?`<div class="flex gap-0.5 mb-2" style="color:var(--star)">${'<i class="fas fa-star"></i>'.repeat(p.rating)}${'<i class="far fa-star"></i>'.repeat(5-p.rating)}</div>`:''}
+            <p class="mb-3" style="color:var(--text-2)">${p.content}</p>
+            <div class="flex flex-wrap gap-2 mb-4">${p.genres.map(g=>`<span class="genre-tag text-xs">${g}</span>`).join('')}</div>
+            <div class="flex items-center gap-6 pt-3" style="border-top:1px solid var(--border)">
+                <button onclick="toggleLike(${p.id})" class="flex items-center gap-2 text-sm font-medium" style="color:${p.liked?'var(--heart)':'var(--text-muted)'}; background:none; border:none; cursor:pointer;"><i class="fas fa-heart"></i> ${p.likes}</button>
+                <button onclick="openPostDetail(${p.id})" class="flex items-center gap-2 text-sm font-medium" style="color:var(--text-muted); background:none; border:none; cursor:pointer;"><i class="fas fa-comment"></i> ${p.comments}</button>
+                <button onclick="showToast('Compartido!')" class="flex items-center gap-2 text-sm font-medium" style="color:var(--text-muted); background:none; border:none; cursor:pointer;"><i class="fas fa-share"></i></button>
+            </div></div>`;
+    });
+    area.innerHTML=html || '<p class="text-center" style="color:var(--text-muted)">No hay publicaciones. Crea la primera!</p>';
+}
 
-// SYNC SERVICE CON MANEJO DE ERRORES MEJORADO
-const SyncService={hasBackend(){return window.location.hostname!=='localhost'&&window.location.hostname!=='127.0.0.1'&&window.location.protocol==='https:'},hasToken(){return APP._authToken&&APP._authToken.length>5},_getDemoDB(){try{return JSON.parse(localStorage.getItem('literared_server')||'{}')}catch(e){return{}}},_saveDemoDB(db){try{localStorage.setItem('literared_server',JSON.stringify(db))}catch(e){}},_demoRegister(e,p,n){const db=this._getDemoDB();if(db[e])return{error:'Correo ya registrado'};const t='token_'+Date.now();db[e]={userId:'u_'+Date.now(),password:btoa(p),name,token,data:{profile:{...DEFAULT_DATA.currentUser,name,username:'@'+n.toLowerCase().replace(/\s/g,''),email,_updatedAt:Date.now()},posts:[],sharedBooks:[],readingNotes:[],settings:{isDark:false},timestamp:Date.now()}};this._saveDemoDB(db);return{token:t,userId:e,user:{name:n,email:e}}},_demoLogin(e,p){const db=this._getDemoDB();const u=db[e];if(!u)return{error:'Correo no registrado'};try{if(atob(u.password)!==p)return{error:'Contrasena incorrecta'}}catch(err){return{error:'Error de datos'}}const t='token_'+Date.now();u.token=t;this._saveDemoDB(db);return{token:t,userId:e,user:{name:u.name,email:e}}},async register(email,pass,name){if(!this.hasBackend())return this._demoRegister(email,pass,name);try{const r=await fetch(API_BASE+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass,name:name})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error del servidor');return d}catch(err){console.warn('Servidor caido, usando demo:',err.message);return this._demoRegister(email,pass,name)}},async login(email,pass){if(!this.hasBackend())return this._demoLogin(email,pass);try{const r=await fetch(API_BASE+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Credenciales invalidas');return d}catch(err){console.warn('Servidor caido, usando demo:',err.message);return this._demoLogin(email,pass)}},_demoPush(){const db=this._getDemoDB();const e=APP._userId;if(!db[e])return;db[e].data={profile:{...APP.currentUser,_updatedAt:Date.now()},posts:APP.posts.filter(p=>p.user?.username===APP.currentUser.username),sharedBooks:APP.sharedBooks.filter(b=>b.owner===APP.currentUser.name),readingNotes:APP.readingNotes,settings:{isDark:APP.isDark},timestamp:Date.now()};this._saveDemoDB(db);APP._syncTimestamp=Date.now();saveAppData();this.updateBadge('ok')},_demoPull(){const db=this._getDemoDB();const e=APP._userId;if(!db[e])return;const s=db[e].data;if(s&&s.timestamp>APP._syncTimestamp){this.mergeData(s);APP._syncTimestamp=Date.now();saveAppData()}this.updateBadge('ok')},async push(){if(!this.hasToken())return;if(!this.hasBackend())return this._demoPush();try{await fetch(API_BASE+'/api/sync/push',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+APP._authToken},body:JSON.stringify({profile:APP.currentUser,posts:APP.posts,sharedBooks:APP.sharedBooks,readingNotes:APP.readingNotes,settings:{isDark:APP.isDark},timestamp:Date.now()})});APP._syncTimestamp=Date.now();saveAppData();this.updateBadge('ok')}catch{this.updateBadge('error')}},async pull(){if(!this.hasToken())return;if(!this.hasBackend())return this._demoPull();try{const r=await fetch(API_BASE+'/api/sync/pull',{headers:{'Authorization':'Bearer '+APP._authToken});if(!r.ok)throw new Error();this.mergeData(await r.json());APP._syncTimestamp=Date.now();saveAppData();this.updateBadge('ok')}catch{this.updateBadge('error')}},mergeData(s){if(!s)return;if(s.profile&&s.profile._updatedAt>APP.currentUser._updatedAt)APP.currentUser={...APP.currentUser,...s.profile};if(s.posts){const ids=new Set(APP.posts.map(p=>p.id));s.posts.forEach(p=>{if(!ids.has(p.id))APP.posts.push(p)})}if(s.sharedBooks){const ids=new Set(APP.sharedBooks.map(b=>b.id));s.sharedBooks.forEach(b=>{if(!ids.has(b.id))APP.sharedBooks.push(b)})}if(s.readingNotes){const ids=new Set(APP.readingNotes.map(n=>n.id));s.readingNotes.forEach(n=>{if(!ids
+function renderForums(area){
+    let html='';
+    APP.forums.forEach(f=>{
+        html+=`<div class="card-lit p-5 mb-4 animate-fadeInUp"><div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background:${f.color}20"><i class="fas ${f.icon} text-2xl" style="color:${f.color}"></i></div>
+            <div class="flex-1"><h4 class="font-display font-bold" style="color:var(--text)">${f.name}</h4><p class="text-sm" style="color:var(--text-muted)">${f.description}</p>
+            <div class="flex items-center gap-4 mt-1 text-xs" style="color:var(--text-muted)"><span><i class="fas fa-users mr-1"></i>${f.members}</span><span><i class="fas fa-comments mr-1"></i>${f.threads}</span></div></div>
+            <button onclick="openThreadModal(${f.id})" class="btn-outline text-sm py-2 px-4">Entrar</button></div></div>`;
+    });
+    area.innerHTML=html;
+}
+
+function renderExchange(area){
+    let html=`<button onclick="openShareBook()" class="btn-primary mb-6 w-full py-3 flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt"></i>Compartir un libro</button>`;
+    APP.sharedBooks.forEach(b=>{
+        html+=`<div class="card-lit p-5 mb-4 animate-fadeInUp"><div class="flex gap-4">
+            <img src="${b.cover}" class="w-20 h-28 rounded-lg object-cover shadow">
+            <div class="flex-1"><h4 class="font-display font-bold" style="color:var(--text)">${b.title}</h4><p class="text-sm mb-2" style="color:var(--text-muted)">${b.author}</p>
+            <div class="flex gap-2 mb-3"><span class="genre-tag text-xs">${b.format}</span><span class="genre-tag text-xs">${b.genre}</span></div>
+            <p class="text-xs mb-3" style="color:var(--text-muted)">${b.description}</p>
+            <div class="flex items-center justify-between"><div class="flex items-center gap-2"><img src="${b.ownerAvatar}" class="w-6 h-6 rounded-full"><span class="text-xs font-medium" style="color:var(--text-muted)">${b.owner}</span></div>
+            <a href="${b.downloadUrl}" target="_blank" class="btn-download text-xs py-2 px-4"><i class="fas fa-download mr-1"></i>Descargar</a></div></div></div></div>`;
+    });
+    area.innerHTML=html;
+}
+
+function renderProfile(area){
+    const u=APP.currentUser;
+    area.innerHTML=`<div class="card-lit p-6 mb-6 text-center animate-fadeInUp">
+        <img src="${u.avatar}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover" style="box-shadow:0 0 0 4px var(--primary)">
+        <h2 class="font-display font-bold text-2xl" style="color:var(--text)">${u.name}</h2>
+        <p class="text-sm mb-2" style="color:var(--text-muted)">${u.username} · ${u.location}</p>
+        <p class="mb-4" style="color:var(--text-2)">${u.bio}</p>
+        <div class="flex justify-center gap-6 mb-4">
+            <div><span class="font-bold" style="color:var(--text)">${u.booksRead}</span><p class="text-xs" style="color:var(--text-muted)">Libros</p></div>
+            <div><span class="font-bold" style="color:var(--text)">${u.followers}</span><p class="text-xs" style="color:var(--text-muted)">Seguidores</p></div>
+            <div><span class="font-bold" style="color:var(--text)">${u.following}</span><p class="text-xs" style="color:var(--text-muted)">Siguiendo</p></div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">${u.genres.map(g=>`<span class="genre-tag">${g}</span>`).join('')}</div></div>`;
+}
+
+function renderNotifications(area){
+    let html='';
+    APP.notifications.forEach(n=>{
+        html+=`<div class="card-lit p-4 mb-3 flex items-center gap-4 animate-fadeInUp" style="opacity:${n.read?'0.7':'1'}">
+            <img src="${n.avatar}" class="w-10 h-10 rounded-full object-cover">
+            <div class="flex-1"><p class="text-sm" style="color:var(--text)"><strong>${n.user}</strong> ${n.text}</p><p class="text-xs" style="color:var(--text-muted)">${n.time}</p></div>
+            ${!n.read?`<div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>`:''}</div>`;
+    });
+    area.innerHTML=html || '<p class="text-center" style="color:var(--text-muted)">Sin notificaciones</p>';
+    document.getElementById('notifBadge').textContent = APP.notifications.filter(n=>!n.read).length;
+}
+
+function renderSearch(area){
+    area.innerHTML=`<div class="mb-6"><input type="text" class="input-field" placeholder="Buscar libros, autores, usuarios..." oninput="handleSearch(this.value)"></div><div id="searchResults"></div>`;
+}
+
+function renderData(area){
+    const isSynced = APP._syncTimestamp > 0;
+    area.innerHTML=`<div class="card-lit p-6 text-center animate-fadeInUp">
+        <i class="fas fa-cloud text-4xl mb-4" style="color:var(--primary)"></i>
+        <h3 class="font-display font-bold text-xl mb-2" style="color:var(--text)">Sincronizacion</h3>
+        <p class="text-sm mb-6" style="color:var(--text-muted)">Ultima sync: ${isSynced?new Date(APP._syncTimestamp).toLocaleString():'Nunca'}</p>
+        <div class="flex gap-4 justify-center">
+            <button onclick="SyncService.push();showToast('Datos subidos')" class="btn-primary py-3 px-6"><i class="fas fa-cloud-upload-alt mr-2"></i>Subir</button>
+            <button onclick="SyncService.pull();showToast('Datos descargados');renderApp();navigate(currentView)" class="btn-outline py-3 px-6"><i class="fas fa-cloud-download-alt mr-2"></i>Descargar</button></div></div>`;
+}
+
+// --- INTERACCIONES (LIKES, COMENTARIOS, POSTS) ---
+function toggleLike(id){
+    const p=APP.posts.find(p=>p.id===id);
+    if(p){ p.liked=!p.liked; p.likes+=p.liked?1:-1; saveAppData(); renderView(currentView); }
+}
+
+function openPostDetail(id){
+    const p=APP.posts.find(p=>p.id===id);
+    if(!p)return;
+    const modal=document.getElementById('postDetailModal');
+    const content=document.getElementById('postDetailContent');
+    
+    let commentsHtml = p.commentList.map(c=>`<div class="flex gap-3 mb-3"><img src="${c.avatar||'https://picsum.photos/seed/anon/50/50'}" class="w-8 h-8 rounded-full"><div><p class="text-sm" style="color:var(--text)"><strong>${c.user||'Anon'}</strong></p><p class="text-sm" style="color:var(--text-2)">${c.text}</p></div></div>`).join('');
+    
+    content.innerHTML=`<div class="flex items-center justify-between mb-4"><h3 class="font-display font-bold text-xl" style="color:var(--text)">Publicacion</h3><button onclick="closePostDetail()" class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--text-muted); background:none; border:none; cursor:pointer;"><i class="fas fa-times"></i></button></div>
+        <p class="mb-4" style="color:var(--text-2)">${p.content}</p>
+        <div style="border-top:1px solid var(--border)" class="pt-4"><h4 class="font-semibold text-sm mb-3" style="color:var(--text)">Comentarios (${p.commentList.length})</h4>
+        ${commentsHtml || '<p class="text-sm" style="color:var(--text-muted)">Sin comentarios aun</p>'}
+        <div class="flex gap-2 mt-4"><input type="text" id="commentInput" class="input-field flex-1" placeholder="Escribe un comentario..."><button onclick="addComment(${p.id})" class="btn-primary">Enviar</button></div></div>`;
+    modal.classList.remove('hidden');
+}
+
+function closePostDetail(){ document.getElementById('postDetailModal').classList.add('hidden'); }
+
+function addComment(id){
+    const p=APP.posts.find(p=>p.id===id);
+    const input=document.getElementById('commentInput');
+    if(!p||!input.value.trim())return;
+    p.commentList.push({user:APP.currentUser.name, avatar:APP.currentUser.avatar, text:input.value.trim()});
+    p.comments++; saveAppData(); openPostDetail(id); 
+}
+
+function openCreatePost(){
+    document.getElementById('createPostModal').classList.remove('hidden');
+    setPostType('review'); renderPostGenres(); currentRating=0;
+}
+
+function closeCreatePost(e){
+    if(e && e.target!==e.currentTarget) return;
+    document.getElementById('createPostModal').classList.add('hidden');
+}
+
+let currentPostType = 'review';
+function setPostType(type){
+    currentPostType=type;
+    document.querySelectorAll('.post-type-btn').forEach(b=>{
+        if(b.dataset.type===type){ b.style.background='var(--primary)'; b.style.color='#FFF'; }
+        else { b.style.background='var(--border)'; b.style.color='var(--text)'; }
+    });
+    document.getElementById('bookTitleField').classList.toggle('hidden', type==='quote');
+    document.getElementById('ratingField').classList.toggle('hidden', type!=='review');
+}
+
+function renderPostGenres(){
+    const box=document.getElementById('postGenreTags');
+    box.innerHTML=GENRES.map(g=>`<span class="genre-tag text-xs" onclick="this.classList.toggle('active');this.style.background=this.classList.contains('active')?'var(--primary)':'var(--primary-bg)';this.style.color=this.classList.contains('active')?'#FFF':'var(--primary)'">${g}</span>`).join('');
+}
+
+function setRating(val){ currentRating=val; }
+
+function submitPost(){
+    const content=document.getElementById('postContent').value.trim();
+    const book=document.getElementById('postBookTitle').value.trim();
+    if(!content){showToast('Escribe algo','error');return;}
+    
+    const newPost={
+        id: Date.now(), type: currentPostType,
+        user: {name:APP.currentUser.name, avatar:APP.currentUser.avatar, username:APP.currentUser.username},
+        content, book: currentPostType!=='quote'?book:'', author: '', rating: currentPostType==='review'?currentRating:0,
+        genres: [], likes: 0, comments: 0, time: 'Ahora', liked: false, commentList: []
+    };
+    APP.posts.unshift(newPost); saveAppData(); closeCreatePost(); navigate('feed'); showToast('Publicacion creada!');
+}
+
+// --- MODALES DE FOROS Y BIBLIOTECA ---
+function openThreadModal(id){
+    const f=APP.forums.find(f=>f.id===id);
+    if(!f)return;
+    document.getElementById('threadContent').innerHTML=`<div class="flex items-center justify-between mb-4"><h3 class="font-display font-bold text-xl" style="color:var(--text)">${f.name}</h3><button onclick="closeThreadModal()" class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--text-muted); background:none; border:none; cursor:pointer;"><i class="fas fa-times"></i></button></div><p class="text-sm" style="color:var(--text-muted)">Hilos del foro en desarrollo.</p>`;
+    document.getElementById('threadModal').classList.remove('hidden');
+}
+
+function closeThreadModal(){ document.getElementById('threadModal').classList.add('hidden'); }
+
+function openShareBook(){
+    selectedFile=null; uploadedUrl='';
+    document.getElementById('fileInfoBox').classList.add('hidden');
+    document.getElementById('uploadProgressBox').classList.add('hidden');
+    document.getElementById('uploadResultBox').classList.add('hidden');
+    document.getElementById('uploadStep2').classList.add('hidden');
+    document.getElementById('nextStepBtn').parentElement.classList.remove('hidden');
+    document.getElementById('shareBookModal').classList.remove('hidden');
+}
+
+function closeShareBook(e){
+    if(e && e.target!==e.currentTarget) return;
+    document.getElementById('shareBookModal').classList.add('hidden');
+}
+
+function handleFileSelect(input){
+    if(input.files.length>0){
+        selectedFile=input.files[0];
+        document.getElementById('fileName').textContent=selectedFile.name;
+        document.getElementById('fileSize').textContent=(selectedFile.size/1024/1024).toFixed(2)+' MB';
+        document.getElementById('fileInfoBox').classList.remove('hidden');
+        document.getElementById('nextStepBtn').disabled=false;
+    }
+}
+
+function clearFile(){ selectedFile=null; document.getElementById('fileInfoBox').classList.add('hidden'); document.getElementById('nextStepBtn').disabled=true; }
+
+function checkManualUrl(){
+    const url=document.getElementById('manualUrl').value;
+    if(url.startsWith('http')){ uploadedUrl=url; document.getElementById('nextStepBtn').disabled=false; }
+}
+
+function goToStep2(){
+    document.getElementById('uploadStep2').classList.remove('hidden');
+    document.getElementById('nextStepBtn').parentElement.classList.add('hidden');
+    document.getElementById('shareLegalAccept').onchange=function(){
+        document.getElementById('publishBookBtn').disabled=!this.checked;
+        document.getElementById('publishBookBtn').classList.toggle('opacity-50',!this.checked);
+        document.getElementById('publishBookBtn').classList.toggle('cursor-not-allowed',!this.checked);
+    };
+}
+
+function goToStep1(){
+    document.getElementById('uploadStep2').classList.add('hidden');
+    document.getElementById('nextStepBtn').parentElement.classList.remove('hidden');
+}
+
+function submitSharedBook(){
+    const title=document.getElementById('shareBookTitle').value;
+    const author=document.getElementById('shareBookAuthor').value;
+    if(!title||!author){showToast('Rellena titulo y autor','error');return;}
+    
+    const newBook={
+        id: Date.now(), title, author, format: document.getElementById('shareBookFormat').value,
+        genre: document.getElementById('shareBookGenre').value, owner: APP.currentUser.name, ownerAvatar: APP.currentUser.avatar,
+        cover: `https://picsum.photos/seed/${Date.now()}/200/300`, description: document.getElementById('shareBookDesc').value || 'Sin descripcion',
+        downloadUrl: uploadedUrl || '#', downloads: 0, time: 'Ahora', server: 'external'
+    };
+    APP.sharedBooks.unshift(newBook); saveAppData(); closeShareBook(); navigate('exchange'); showToast('Libro compartido!');
+}
+
+// --- NOTAS Y UTILS ---
+function openNoteModal(){ document.getElementById('noteModal').classList.remove('hidden'); }
+function closeNoteModal(){ document.getElementById('noteModal').classList.add('hidden'); }
+
+function saveNoteToStorage(){
+    const book=document.getElementById('noteBook').value;
+    const content=document.getElementById('noteContent').value;
+    if(!content){showToast('Escribe una nota','error');return;}
+    APP.readingNotes.push({id:Date.now(), book, content, date: new Date().toLocaleString()});
+    saveAppData(); closeNoteModal(); showToast('Nota guardada!');
+}
+
+function downloadNote(){
+    const content=document.getElementById('noteContent').value;
+    if(!content)return;
+    const blob=new Blob([content],{type:'text/plain'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='nota.txt'; a.click();
+}
+
+function handleSearch(val){
+    const results=document.getElementById('searchResults');
+    if(!val.trim()){results.innerHTML='';return;}
+    const posts=APP.posts.filter(p=>p.content.toLowerCase().includes(val.toLowerCase()) || (p.book&&p.book.toLowerCase().includes(val.toLowerCase())));
+    let html='';
+    posts.forEach(p=>{ html+=`<div class="card-lit p-4 mb-2"><p class="text-sm" style="color:var(--text)">${p.content.substring(0,100)}</p></div>`; });
+    results.innerHTML=html||'<p class="text-center text-sm" style="color:var(--text-muted)">Sin resultados</p>';
+}
+
+function showToast(msg, type='success'){
+    const container=document.getElementById('toastContainer');
+    const toast=document.createElement('div');
+    toast.className=`toast toast-${type}`; toast.textContent=msg;
+    container.appendChild(toast); setTimeout(()=>toast.remove(),3000);
+}
+
+function installPWA(){
+    if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; document.getElementById('installBanner').style.display='none'}); }
+}
+
+window.addEventListener('beforeinstallprompt', (e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='flex'});
+
+// Iniciar la aplicación
+init();
+</script>
