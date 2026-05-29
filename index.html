@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs (Solo Auth y Firestore, SIN Storage) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -117,7 +117,7 @@
 
 <script>
 // =========================================================
-// 🔥 FIREBASE CONFIG (Solo Auth y Firestore) 🔥
+// 🔥 FIREBASE CONFIG 🔥
 // =========================================================
 const firebaseConfig = {
   apiKey: "AIzaSyBU6GJmodoSTzOHSaGL9MIZYbBs2aLFjyk",
@@ -154,7 +154,7 @@ function renderApp(){const u=APP.currentUser;document.getElementById('sidebarAva
 function toggleDark(){APP.isDark=!APP.isDark;SyncService.push();renderApp()}
 
 function renderView(v){const a=document.getElementById('contentArea');a.innerHTML='';if(v==='feed')renderFeed(a);else if(v==='exchange')renderExchange(a);else if(v==='profile')renderProfile(a)}
-function renderFeed(a){let h='';APP.posts.forEach(p=>{h+=`<div class="card-lit p-5 mb-4 animate-fadeInUp"><div class="flex items-center gap-3 mb-3"><img src="${p.user.avatar}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1"><p class="font-semibold text-sm" style="color:var(--text)">${p.user.name}</p><p class="text-xs" style="color:var(--text-muted)">${p.user.username} · ${p.time}</p></div>${p.type==='review'?'<span class="genre-tag"><i class="fas fa-star text-xs mr-1"></i>Resena</span>':'<span class="genre-tag" style="background:rgba(139,94,60,.1);color:var(--leather)"><i class="fas fa-quote-left text-xs mr-1"></i>Cita</span>'}</div>${p.book?`<p class="font-display font-bold mb-1" style="color:var(--text)">${p.book}</p>`:''}${p.rating?`<div class="flex gap-0.5 mb-2" style="color:var(--star)`${'<i class="fas fa-star"></i>'.repeat(p.rating)}${'<i class="far fa-star"></i>'.repeat(5-p.rating)}</div>`:''}<p class="mb-3" style="color:var(--text-2)">${p.content}</p><div class="flex items-center gap-6 pt-3" style="border-top:1px solid var(--border)"><button onclick="toggleLike(${p.id})" class="flex items-center gap-2 text-sm font-medium" style="color:${p.liked?'var(--heart)':'var(--text-muted)'};background:none;border:none;cursor:pointer"><i class="fas fa-heart"></i> ${p.likes}</button></div></div>`});a.innerHTML=h||'<p class="text-center" style="color:var(--text-muted)">No hay publicaciones. Crea la primera!</p>'}
+function renderFeed(a){let h='';APP.posts.forEach(p=>{h+=`<div class="card-lit p-5 mb-4 animate-fadeInUp"><div class="flex items-center gap-3 mb-3"><img src="${p.user.avatar}" class="w-10 h-10 rounded-full object-cover"><div class="flex-1"><p class="font-semibold text-sm" style="color:var(--text)">${p.user.name}</p><p class="text-xs" style="color:var(--text-muted)">${p.user.username} · ${p.time}</p></div>${p.type==='review'?'<span class="genre-tag"><i class="fas fa-star text-xs mr-1"></i>Resena</span>':'<span class="genre-tag" style="background:rgba(139,94,60,.1);color:var(--leather)"><i class="fas fa-quote-left text-xs mr-1"></i>Cita</span>'}</div>${p.book?`<p class="font-display font-bold mb-1" style="color:var(--text)">${p.book}</p>`:''}${p.rating?`<div class="flex gap-0.5 mb-2" style="color:var(--star)">${'<i class="fas fa-star"></i>'.repeat(p.rating)}${'<i class="far fa-star"></i>'.repeat(5-p.rating)}</div>`:''}<p class="mb-3" style="color:var(--text-2)">${p.content}</p><div class="flex items-center gap-6 pt-3" style="border-top:1px solid var(--border)"><button onclick="toggleLike(${p.id})" class="flex items-center gap-2 text-sm font-medium" style="color:${p.liked?'var(--heart)':'var(--text-muted)'};background:none;border:none;cursor:pointer"><i class="fas fa-heart"></i> ${p.likes}</button></div></div>`});a.innerHTML=h||'<p class="text-center" style="color:var(--text-muted)">No hay publicaciones. Crea la primera!</p>'}
 function renderExchange(a){let h=`<button onclick="openShareBook()" class="btn-primary mb-6 w-full py-3 flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt"></i>Compartir un libro</button>`;APP.sharedBooks.forEach(b=>{h+=`<div class="card-lit p-5 mb-4 animate-fadeInUp"><div class="flex gap-4"><img src="${b.cover}" class="w-20 h-28 rounded-lg object-cover shadow"><div class="flex-1"><h4 class="font-display font-bold" style="color:var(--text)">${b.title}</h4><p class="text-sm mb-2" style="color:var(--text-muted)">${b.author}</p><div class="flex gap-2 mb-3"><span class="genre-tag text-xs">${b.format}</span><span class="genre-tag text-xs">${b.genre}</span></div><a href="${b.downloadUrl}" target="_blank" class="btn-download text-xs py-2 px-4 inline-block mt-2"><i class="fas fa-download mr-1"></i>Descargar</a></div></div></div>`});a.innerHTML=h}
 function renderProfile(a){const u=APP.currentUser;a.innerHTML=`<div class="card-lit p-6 mb-6 text-center animate-fadeInUp"><img src="${u.avatar}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover" style="box-shadow:0 0 0 4px var(--primary)"><h2 class="font-display font-bold text-2xl" style="color:var(--text)">${u.name}</h2><p class="text-sm mb-4" style="color:var(--text-muted)">${u.username}</p><button onclick="handleLogout()" class="btn-logout w-full py-3"><i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesion</button></div>`}
 
@@ -166,10 +166,9 @@ function setPostType(t){currentPostType=t;document.querySelectorAll('.post-type-
 function setRating(v){currentRating=v}
 function submitPost(){const c=document.getElementById('postContent').value.trim(),b=document.getElementById('postBookTitle').value.trim();if(!c){showToast('Escribe algo','error');return}APP.posts.unshift({id:Date.now(),type:currentPostType,user:{name:APP.currentUser.name,avatar:APP.currentUser.avatar,username:APP.currentUser.username},content:c,book:currentPostType!=='quote'?b:'',rating:currentPostType==='review'?currentRating:0,likes:0,comments:0,time:'Ahora',liked:false,commentList:[]});SyncService.push();closeCreatePost();navigate('feed');showToast('Publicacion creada!')}
 
-// --- SUBIDA DE LIBROS A CATBOX.MOE (SERVIDOR EXTERNO GRATIS) ---
+// --- SUBIDA DE LIBROS A CATBOX.MOE ---
 function openShareBook(){selectedFile=null;bookDownloadUrl='';document.getElementById('fileLabel').textContent='Haz clic o arrastra el archivo aqui';document.getElementById('uploadProgressBox').classList.add('hidden');document.getElementById('manualUrl').value='';document.getElementById('shareBookModal').classList.remove('hidden')}
 function closeShareBook(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('shareBookModal').classList.add('hidden')}
-
 function handleFileSelect(input){if(input.files.length>0){selectedFile=input.files[0];document.getElementById('fileLabel').textContent=selectedFile.name;document.getElementById('manualUrl').value=''}}
 function checkManualUrl(){const u=document.getElementById('manualUrl').value;if(u.startsWith('http')){selectedFile=null;document.getElementById('fileLabel').textContent='Haz clic o arrastra el archivo aqui'}}
 
@@ -177,11 +176,9 @@ async function uploadToCatbox(file){
     const formData = new FormData();
     formData.append('reqtype', 'fileupload');
     formData.append('fileToUpload', file);
-
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://catbox.moe/user/api.php');
-        
         xhr.upload.onprogress = (e) => {
             if (e.lengthComputable) {
                 const percent = Math.round((e.loaded / e.total) * 100);
@@ -189,14 +186,7 @@ async function uploadToCatbox(file){
                 document.getElementById('uploadPercent').textContent = percent + '%';
             }
         };
-
-        xhr.onload = () => {
-            if (xhr.status === 200) {
-                resolve(xhr.responseText.trim()); // Retorna la URL del archivo
-            } else {
-                reject('Error al subir: ' + xhr.status);
-            }
-        };
+        xhr.onload = () => { if (xhr.status === 200) { resolve(xhr.responseText.trim()) } else { reject('Error al subir: ' + xhr.status) } };
         xhr.onerror = () => reject('Error de red al subir archivo');
         xhr.send(formData);
     });
@@ -205,34 +195,18 @@ async function uploadToCatbox(file){
 async function submitSharedBook(){
     const t=document.getElementById('shareBookTitle').value, a=document.getElementById('shareBookAuthor').value, manualUrl=document.getElementById('manualUrl').value;
     if(!t||!a){showToast('Rellena titulo y autor','error');return}
-    
-    const btn=document.getElementById('submitBookBtn');
-    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
+    const btn=document.getElementById('submitBookBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
 
-    // Si el usuario seleccionó un archivo, subirlo a Catbox
     if(selectedFile && !bookDownloadUrl){
-        try{
-            document.getElementById('uploadProgressBox').classList.remove('hidden');
-            bookDownloadUrl = await uploadToCatbox(selectedFile);
-            showToast('Archivo subido a servidor externo!', 'success');
-        } catch(err){
-            showToast('Error al subir el archivo a Catbox', 'error');
-            console.error(err);
-            btn.disabled=false; btn.innerHTML='<i class="fas fa-cloud-upload-alt mr-2"></i>Publicar Libro';
-            return;
-        }
-    } else if(manualUrl.startsWith('http')){
-        bookDownloadUrl = manualUrl;
-    }
+        try{ document.getElementById('uploadProgressBox').classList.remove('hidden'); bookDownloadUrl = await uploadToCatbox(selectedFile); showToast('Archivo subido a servidor externo!', 'success'); }
+        catch(err){ showToast('Error al subir el archivo a Catbox', 'error'); console.error(err); btn.disabled=false; btn.innerHTML='<i class="fas fa-cloud-upload-alt mr-2"></i>Publicar Libro'; return; }
+    } else if(manualUrl.startsWith('http')){ bookDownloadUrl = manualUrl; }
 
     if(!bookDownloadUrl){showToast('Sube un archivo o pega un enlace','error');btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt mr-2"></i>Publicar Libro';return}
 
-    // Guardar en Firestore
     APP.sharedBooks.unshift({id:Date.now(),title:t,author:a,format:document.getElementById('shareBookFormat').value,genre:document.getElementById('shareBookGenre').value,owner:APP.currentUser.name,ownerAvatar:APP.currentUser.avatar,cover:`https://picsum.photos/seed/${Date.now()}/200/300`,downloadUrl:bookDownloadUrl,time:'Ahora'});
     await SyncService.push();closeShareBook();navigate('exchange');showToast('Libro compartido en la nube!');
-    
-    btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt mr-2"></i>Publicar Libro';
-    bookDownloadUrl='';selectedFile=null;
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-upload-alt mr-2"></i>Publicar Libro'; bookDownloadUrl='';selectedFile=null;
 }
 
 function showToast(m,t='success'){const c=document.getElementById('toastContainer'),ts=document.createElement('div');ts.className=`toast toast-${t}`;ts.textContent=m;c.appendChild(ts);setTimeout(()=>ts.remove(),3000)}
